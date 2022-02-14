@@ -813,9 +813,16 @@ lambdaExp = Lambda
                  <|> (LambdaExpression <$> exp))
 
 methodRef :: P Exp
-methodRef = MethodRef
-            <$> (name <*  (tok MethodRefSep))
-            <*> ident
+methodRef =
+  try (MethodRef
+      <$> (name <*  (tok MethodRefSep))
+      <*> ident
+      )
+  <|> try
+      (MethodRef
+      <$> (return (Name [Ident "this"]) <* (tok KW_This) <* (tok MethodRefSep))
+      <*> ident
+      )
 
 {-
 instanceCreation =
