@@ -29,6 +29,7 @@ module Language.Java.Syntax
     , BlockStmt(..)
     , Stmt(..)
     , Catch(..)
+    , CatchParam(..)
     , SwitchBlock(..)
     , SwitchLabel(..)
     , ForInit(..)
@@ -309,9 +310,13 @@ data Stmt
     | Labeled Ident Stmt
   deriving (Eq,Show,Read,Typeable,Generic,Data)
 
+-- | A parameter in try-catch catch block. Multiple types may be specified.
+data CatchParam = CatchParam [Type] VarDeclId
+  deriving (Eq,Show,Read,Typeable,Generic,Data)
+
 -- | If a value is thrown and the try statement has one or more catch clauses that can catch it, then control will be
 --   transferred to the first such catch clause.
-data Catch = Catch FormalParam Block
+data Catch = Catch CatchParam Block
   deriving (Eq,Show,Read,Typeable,Generic,Data)
 
 -- | A block of code labelled with a @case@ or @default@ within a @switch@ statement.

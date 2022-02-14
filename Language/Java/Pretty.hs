@@ -263,9 +263,15 @@ instance Pretty Stmt where
   prettyPrec p (Labeled ident stmt) =
     prettyPrec p ident <> colon <+> prettyPrec p stmt
 
+instance Pretty CatchParam where
+  prettyPrec p (CatchParam ts vId) =
+    hsep [ hsep $ punctuate (char '|') (map (prettyPrec p) ts)
+         , prettyPrec p vId
+         ]
+
 instance Pretty Catch where
-  prettyPrec p (Catch fParam block) =
-    hsep [text "catch", parens (prettyPrec p fParam)] $$ prettyPrec p block
+  prettyPrec p (Catch catchParam block) =
+    hsep [text "catch", parens (prettyPrec p catchParam)] $$ prettyPrec p block
 
 instance Pretty SwitchBlock where
   prettyPrec p (SwitchBlock lbl stmts) =

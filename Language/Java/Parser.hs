@@ -604,10 +604,18 @@ switchLabel = (tok KW_Default >> colon >> return Default) <|>
 
 -- Try-catch clauses
 
+catchParam :: P CatchParam
+catchParam = do
+    typList <- seplist1 ttype $ tok Op_Or
+    vid <- varDeclId
+    return $ CatchParam typList vid
+
+
 catch :: P Catch
 catch = do
     tok KW_Catch
-    fp <- parens formalParam
+    -- fp <- parens formalParam
+    fp <- parens catchParam
     b  <- block
     return $ Catch fp b
 
@@ -799,13 +807,13 @@ lambdaParams = try (LambdaSingleParam <$> ident)
                <|> (parens $ LambdaInferredParams <$> (seplist ident comma))
 
 lambdaExp :: P Exp
-lambdaExp = Lambda 
+lambdaExp = Lambda
             <$> (lambdaParams <* (tok LambdaArrow))
             <*> ((LambdaBlock <$> (try block))
                  <|> (LambdaExpression <$> exp))
 
 methodRef :: P Exp
-methodRef = MethodRef 
+methodRef = MethodRef
             <$> (name <*  (tok MethodRefSep))
             <*> ident
 
